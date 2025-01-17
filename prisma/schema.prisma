@@ -17,10 +17,11 @@ model User {
   id          String   @id @default(cuid())
   email       String   @unique
   nome        String?
-  contato     String
+  contato     String   @unique
   produto     String
+  equipe      String
   unidade     String
-  matricula   String?
+  matricula   String?  @unique
   aniversario DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

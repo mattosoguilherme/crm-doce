@@ -36,6 +36,14 @@ export class CreateUserDto {
   })
   produto: string;
 
+  
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    default: 'VT',
+  })
+  equipe: string;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
