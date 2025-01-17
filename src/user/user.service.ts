@@ -33,7 +33,18 @@ export class UserService {
       throw new ConflictException('Matricula já cadastrada');
     }
 
-    return await this.prisma.user.create({ data: createUserDto });
+    return await this.prisma.user.create({
+      data: {
+        contato: contato,
+        email: email,
+        matricula: matricula,
+        equipe: createUserDto.equipe,
+        nome: createUserDto.nome,
+        aniversario: new Date(createUserDto.aniversario),
+        produto: createUserDto.produto,
+        unidade: createUserDto.unidade,
+      },
+    });
   }
 
   async findAll(): Promise<User[]> {
