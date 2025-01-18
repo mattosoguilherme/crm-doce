@@ -38,7 +38,6 @@ export class UserService {
         contato: contato,
         email: email,
         matricula: matricula,
-        equipe: createUserDto.equipe,
         nome: createUserDto.nome,
         aniversario: new Date(createUserDto.aniversario),
         produto: createUserDto.produto,
@@ -51,15 +50,6 @@ export class UserService {
     return await this.prisma.user.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
 }

@@ -19,7 +19,6 @@ model User {
   nome        String?
   contato     String   @unique
   produto     String
-  equipe      String
   unidade     String
   matricula   String?  @unique
   aniversario DateTime
