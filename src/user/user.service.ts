@@ -1,37 +1,31 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/config/prisma.client';
 import { User } from '@prisma/client';
+import { CrmService } from 'src/crm.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private crm: CrmService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { contato, email, matricula } = createUserDto;
+    const { contato, email, matricula, password, confirmPassword } =
+      createUserDto;
 
-    const VerifyContato = await this.prisma.user.findUnique({
-      where: { contato: contato },
-    });
+    await this.crm.matricuExiste(matricula);
+    await this.crm.emailExiste(email);
+    await this.crm.contatoExiste(contato);
 
-    if (VerifyContato) {
-      throw new ConflictException('Contato já cadastrado');
+    if (password !== confirmPassword) {
+      throw new ConflictException('As senhas não são iguais');
     }
 
-    const VerifyEmail = await this.prisma.user.findUnique({
-      where: { email: email },
-    });
-    if (VerifyEmail) {
-      throw new ConflictException('Email já cadastrado');
-    }
-
-    const VerifyMatricula = await this.prisma.user.findUnique({
-      where: { matricula: matricula },
-    });
-    if (VerifyMatricula) {
-      throw new ConflictException('Matricula já cadastrada');
-    }
+    createUserDto['password'] = await bcrypt.hash(password, 10);
 
     return await this.prisma.user.create({
       data: {
@@ -42,6 +36,7 @@ export class UserService {
         aniversario: new Date(createUserDto.aniversario),
         produto: createUserDto.produto,
         unidade: createUserDto.unidade,
+        password: createUserDto.password,
       },
     });
   }
@@ -49,7 +44,17 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return await this.prisma.user.findMany();
   }
+  async findOne(id: string): Promise<User> {
+    await this.crm.verficarId(id);
+    return await this.prisma.user.findUnique({
+      where: { id },
+    });
+  }
 
-
-
+  async delete(id: string): Promise<User> {
+    await this.crm.verficarId(id);
+    return await this.prisma.user.delete({
+      where: { id },
+    });
+  }
 }

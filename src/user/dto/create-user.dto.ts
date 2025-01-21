@@ -4,6 +4,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsString,
+  Length,
 } from 'class-validator';
 export class CreateUserDto {
   @IsString()
@@ -55,4 +56,20 @@ export class CreateUserDto {
     default: '2021-10-10',
   })
   aniversario: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Length(4, 8)
+  @ApiProperty({
+    default: '123456',
+  })
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Length(4, 8)
+  @ApiProperty({
+    default: '123456',
+  })
+  confirmPassword: string;
 }

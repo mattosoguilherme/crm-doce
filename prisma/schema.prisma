@@ -9,19 +9,50 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL2")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
+  id          String    @id @default(cuid())
+  email       String    @unique
+  password    String
   nome        String?
-  contato     String   @unique
+  contato     String    @unique
   produto     String
   unidade     String
-  matricula   String?  @unique
+  matricula   String?   @unique
   aniversario DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Pedidos     Pedidos[]
+
+  @@map("user")
+}
+
+model Cardapio {
+  id        Int       @id @default(autoincrement())
+  urlFoto   String
+  titulo    String
+  descricao String
+  preco     Float
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Pedidos   Pedidos[]
+
+  @@map("cardapio")
+}
+
+model Pedidos {
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  Cardapio  Cardapio[]
+  status    String
+  pagamento String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("pedidos")
 }
