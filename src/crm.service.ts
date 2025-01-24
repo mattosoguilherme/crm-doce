@@ -21,27 +21,27 @@ export class CrmService {
 
   // USER
   async matriculaValid(matricula: string) {
-    await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { matricula: matricula },
     });
-    if (matricula) {
+    if (user) {
       throw new ConflictException('Matricula já cadastrada');
     }
   }
   async emailValid(email: string) {
-    await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { email: email },
     });
-    if (email) {
+    if (user) {
       throw new ConflictException('Email já cadastrado');
     }
   }
   async contatoValid(contato: string) {
-    await this.prisma.user.findUnique({
+   const user = await this.prisma.user.findUnique({
       where: { contato: contato },
     });
 
-    if (contato) {
+    if (user) {
       throw new ConflictException('Contato já cadastrado');
     }
   }

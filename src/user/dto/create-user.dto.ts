@@ -11,35 +11,35 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()
   @ApiProperty({
-    default: 'teste@gmail.com',
+    default: 'guilhermemktfran@gmail.com',
   })
   email: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    default: 'Teste da Silva',
+    default: 'guilherme mattoso',
   })
   nome: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    default: '119760706070',
+    default: '11992767398',
   })
   contato: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    default: 'Teste',
+    default: 'alelo',
   })
   produto: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    default: 'Mogi 2',
+    default: 'mogi 2',
   })
   unidade: string;
 
@@ -53,7 +53,7 @@ export class CreateUserDto {
   @IsDateString()
   @IsNotEmpty()
   @ApiProperty({
-    default: '2021-10-10',
+    default: '2003-07-08',
   })
   aniversario: string;
 
