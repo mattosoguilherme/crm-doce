@@ -50,7 +50,7 @@ export class CrmService {
       where: { id: id },
     });
 
-    if (user!) {
+    if (!user) {
       throw new ConflictException('Id não encontrado');
     }
 
@@ -82,8 +82,8 @@ export class CrmService {
       password: userBefore.password,
       nome: userBefore.nome,
       contato: userBefore.contato,
-      produto: userBefore.produto,
-      unidade: userBefore.unidade,
+      produto: userUpdate.produto,
+      unidade: userUpdate.unidade,
       matricula: userBefore.matricula,
       aniversario: userBefore.aniversario,
     };
@@ -122,6 +122,10 @@ export class CrmService {
     if (contato) {
       await this.contatoValid(contato);
       userAfter.contato = contato;
+    }
+
+    if(userUpdate.aniversario){ 
+      userAfter.aniversario = new Date(userUpdate.aniversario);
     }
 
     return userAfter;
