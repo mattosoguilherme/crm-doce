@@ -17,15 +17,17 @@ export class UserService {
     const { contato, email, matricula, password, confirmPassword } =
       createUserDto;
 
-    await this.crm.matricuExiste(matricula);
-    await this.crm.emailExiste(email);
-    await this.crm.contatoExiste(contato);
+    await this.crm.matriculaValid(matricula);
+    await this.crm.emailValid(email);
+    await this.crm.contatoValid(contato);
 
     if (password !== confirmPassword) {
       throw new ConflictException('As senhas não são iguais');
     }
 
     createUserDto['password'] = await bcrypt.hash(password, 10);
+
+    delete createUserDto.confirmPassword;
 
     return await this.prisma.user.create({
       data: {
@@ -45,16 +47,39 @@ export class UserService {
     return await this.prisma.user.findMany();
   }
   async findOne(id: string): Promise<User> {
-    await this.crm.verficarId(id);
+    await this.crm.findUserById(id);
     return await this.prisma.user.findUnique({
       where: { id },
     });
   }
 
   async delete(id: string): Promise<User> {
-    await this.crm.verficarId(id);
+    await this.crm.findUserById(id);
     return await this.prisma.user.delete({
       where: { id },
+    });
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    await this.crm.findUserById(id);
+
+    const userUpadted = await this.crm.fieldUniqueUpdateValid(
+      updateUserDto,
+      id,
+    );
+
+    return await this.prisma.user.update({
+      where: { id },
+      data: {
+        contato: userUpadted.contato,
+        email: userUpadted.email,
+        matricula: userUpadted.matricula,
+        nome: userUpadted.nome,
+        aniversario: userUpadted.aniversario,
+        produto: userUpadted.produto,
+        unidade: userUpadted.unidade,
+        password: userUpadted.password,
+      },
     });
   }
 }
