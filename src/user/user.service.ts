@@ -34,7 +34,7 @@ export class UserService {
         contato: contato,
         email: email,
         matricula: matricula,
-        nome: createUserDto.nome,
+        nome: this.crm.titleize(createUserDto.nome),
         aniversario: new Date(createUserDto.aniversario),
         produto: createUserDto.produto,
         unidade: createUserDto.unidade,
