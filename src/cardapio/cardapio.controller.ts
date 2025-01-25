@@ -18,17 +18,17 @@ export class CardapioController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.cardapioService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCardapioDto: UpdateCardapioDto) {
-    return this.cardapioService.update(+id, updateCardapioDto);
+  update(@Param('id') id: number, @Body() updateCardapioDto: UpdateCardapioDto) {
+    return this.cardapioService.update(id, updateCardapioDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cardapioService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.cardapioService.remove(id);
   }
 }

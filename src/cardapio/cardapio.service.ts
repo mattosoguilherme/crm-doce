@@ -46,4 +46,6 @@ export class CardapioService {
   async remove(id: number): Promise<Cardapio> {
     return await this.prisma.cardapio.delete({ where: { id: id } });
   }
+
+  
 }
