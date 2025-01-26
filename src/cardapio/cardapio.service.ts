@@ -19,6 +19,8 @@ export class CardapioService {
         preco: createCardapioDto.preco,
         titulo: this.crmService.titleize(createCardapioDto.titulo),
         urlFoto: createCardapioDto.urlFoto,
+      
+
       },
     });
   }
