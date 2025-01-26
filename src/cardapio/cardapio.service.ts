@@ -30,23 +30,24 @@ export class CardapioService {
   }
 
   async findOne(id: number): Promise<Cardapio> {
-    return await this.prisma.cardapio.findUnique({ where: { id: id } });
+    return await this.prisma.cardapio.findUnique({ where: { id: Number(id) } });
   }
 
   async update(id: number, updateCardapioDto: UpdateCardapioDto) {
     return await this.prisma.cardapio.update({
-      where: { id: id },
+      where: { id: Number(id)},
       data: {
         descricao: updateCardapioDto.descricao,
         preco: updateCardapioDto.preco,
-        titulo: this.crmService.titleize(updateCardapioDto.titulo),
+        titulo: updateCardapioDto.titulo,
         urlFoto: updateCardapioDto.urlFoto,
+        active: updateCardapioDto.active,
       },
     });
   }
 
   async remove(id: number): Promise<Cardapio> {
-    return await this.prisma.cardapio.delete({ where: { id: id } });
+    return await this.prisma.cardapio.delete({ where: { id: Number(id) } });
   }
 
   

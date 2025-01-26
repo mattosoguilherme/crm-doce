@@ -19,7 +19,7 @@ export class CardapioController {
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.cardapioService.findOne(+id);
+    return this.cardapioService.findOne(id);
   }
 
   @Patch(':id')

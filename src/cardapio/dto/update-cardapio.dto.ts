@@ -1,6 +1,6 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateCardapioDto } from './create-cardapio.dto';
-import { IsOptional } from 'class-validator';
+import { IsBoolean, IsOptional } from 'class-validator';
 
 export class UpdateCardapioDto extends PartialType(CreateCardapioDto) {
   @IsOptional()
@@ -11,4 +11,9 @@ export class UpdateCardapioDto extends PartialType(CreateCardapioDto) {
   titulo?: string;
   @IsOptional()
   urlFoto?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({ default: true })
+  active?: boolean;
 }
