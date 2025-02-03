@@ -5,7 +5,7 @@ export class CreateCardapioDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty( {default:"https://static.vecteezy.com/ti/vetor-gratis/p1/15218223-de-contorno-de-icone-de-cupcake-de-creme-liquido-doce-vetor.jpg"})
+  @ApiProperty( {default:"https://benditosalgado.com.br/wp-content/uploads/2022/06/Morango-Coberto-Doce-de-Leite-Branco2.jpg"})
   urlFoto: string;
 
   @IsString()

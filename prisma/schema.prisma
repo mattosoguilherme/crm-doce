@@ -19,39 +19,42 @@ model User {
   aniversario DateTime
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  Pedidos     Pedidos[]
   Comanda     Comanda[]
+  Pedidos     Pedido[]
 
   @@map("user")
 }
 
 model Cardapio {
-  id        Int       @id @default(autoincrement())
-  urlFoto   String
-  titulo    String
-  descricao String
-  preco     Float
-  active    Boolean?  @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Pedidos   Pedidos[] @relation("CardapioToPedidos")
+  id         Int          @id @default(autoincrement())
+  urlFoto    String
+  titulo     String
+  descricao  String
+  preco      Float
+  active     Boolean?     @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  pedidoitem pedidoitem[]
 
   @@map("cardapio")
 }
 
-model Pedidos {
-  id        Int        @id @default(autoincrement())
-  userId    String
-  status    String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  user      User       @relation(fields: [userId], references: [id])
-  Cardapio  Cardapio[] @relation("CardapioToPedidos")
+model Pedido {
+  id               Int          @id @default(autoincrement())
+  userId           String
+  status           String
+  metodo_pagamento String
+  total            Float
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  comandaId        Int?
+  Comanda          Comanda?     @relation(fields: [comandaId], references: [id])
+  user             User         @relation(fields: [userId], references: [id])
+  pedidoitem       pedidoitem[]
 
-  comandaId Int?
-  Comanda   Comanda? @relation(fields: [comandaId], references: [id])
-
-  @@map("pedidos")
+  @@index([comandaId], map: "pedido_comandaId_fkey")
+  @@index([userId], map: "pedido_userId_fkey")
+  @@map("pedido")
 }
 
 model Comanda {
@@ -62,10 +65,23 @@ model Comanda {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   user          User     @relation(fields: [userId], references: [id])
+  Pedidos       Pedido[]
 
-  // Correção: Explicitando o relacionamento 1:N com pedidos
-
-  Pedidos Pedidos[]
-
+  @@index([userId], map: "comanda_userId_fkey")
   @@map("comanda")
+}
+
+model pedidoitem {
+  id             Int      @id @default(autoincrement())
+  cardapioId     Int
+  quantidade     Int      @default(1)
+  valor_unitario Float
+  pedidoId       Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  cardapio       Cardapio @relation(fields: [cardapioId], references: [id], map: "PedidoItem_cardapioId_fkey")
+  pedido         Pedido?  @relation(fields: [pedidoId], references: [id], map: "PedidoItem_pedidoId_fkey")
+
+  @@index([cardapioId], map: "PedidoItem_cardapioId_fkey")
+  @@index([pedidoId], map: "PedidoItem_pedidoId_fkey")
 }

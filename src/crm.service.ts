@@ -51,7 +51,7 @@ export class CrmService {
     });
 
     if (!user) {
-      throw new ConflictException('Id não encontrado');
+      throw new ConflictException('Id User não encontrado');
     }
 
     return user;
@@ -130,4 +130,38 @@ export class CrmService {
 
     return userAfter;
   }
+
+  // END USER
+
+
+  // CARDÁPIO
+
+  async findItemById(id: number) {
+    const item = await this.prisma.cardapio.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!item) {
+      throw new ConflictException('Id Item não encontrado');
+    }
+
+    return item;
+  }
+
+  // END CARDÁPIO
+
+  // PEDIDO
+
+  async findPedidoById(id: number) {
+    const pedido = await this.prisma.pedido.findUnique({
+      where: { id: id },
+    });
+
+    if (!pedido) {
+      throw new ConflictException('Id Pedido não encontrado');
+    }
+
+    return pedido;
+  }
+
 }
