@@ -10,6 +10,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateTUser } from './dto/createT.dto';
 
 @Controller('user')
 export class UserController {
@@ -38,5 +39,15 @@ export class UserController {
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.userService.delete(id);
+  }
+
+  @Post('createTM')
+  createTM() {
+    return this.userService.createMany();
+  }
+
+  @Post('send')
+  send() {
+    return this.userService.SendComanda();
   }
 }

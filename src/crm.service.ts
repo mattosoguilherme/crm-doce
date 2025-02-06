@@ -25,7 +25,7 @@ export class CrmService {
       where: { matricula: matricula },
     });
     if (user) {
-      throw new ConflictException('Matricula já cadastrada');
+      throw new ConflictException(matricula, 'Matricula já cadastrada');
     }
   }
   async emailValid(email: string) {
@@ -33,16 +33,16 @@ export class CrmService {
       where: { email: email },
     });
     if (user) {
-      throw new ConflictException('Email já cadastrado');
+      throw new ConflictException(email, 'Email já cadastrado');
     }
   }
   async contatoValid(contato: string) {
-   const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { contato: contato },
     });
 
     if (user) {
-      throw new ConflictException('Contato já cadastrado');
+      throw new ConflictException(contato, 'Contato já cadastrado');
     }
   }
   async findUserById(id: string): Promise<User> {
@@ -86,6 +86,7 @@ export class CrmService {
       unidade: userUpdate.unidade,
       matricula: userBefore.matricula,
       aniversario: userBefore.aniversario,
+      messageLogId: 0,
     };
 
     if (userUpdate.nome) {
@@ -124,7 +125,7 @@ export class CrmService {
       userAfter.contato = contato;
     }
 
-    if(userUpdate.aniversario){ 
+    if (userUpdate.aniversario) {
       userAfter.aniversario = new Date(userUpdate.aniversario);
     }
 
@@ -132,7 +133,6 @@ export class CrmService {
   }
 
   // END USER
-
 
   // CARDÁPIO
 
@@ -163,5 +163,4 @@ export class CrmService {
 
     return pedido;
   }
-
 }
