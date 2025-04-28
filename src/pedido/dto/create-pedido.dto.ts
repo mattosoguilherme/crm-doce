@@ -12,9 +12,9 @@ export class CreatePedidoDto {
   @IsNotEmpty({ message: 'O campo items_id não pode ser vazio' })
   @ApiProperty({
     default: [
-      { id: 1, qtd: 2, valor_unitario: 12.1 },
-      { id: 2, qtd: 2, valor_unitario: 12.1 },
-      { id: 3, qtd: 2, valor_unitario: 12.1 },
+      { id: 1, quantidade: 2, preco: 12.0, active: true, descricao: 'Produto de teste', titulo: 'Produto de teste', urlFoto: 'http://teste.com.br/foto.png' },
+      { id: 2, quantidade: 1, preco: 15.0, active: true, descricao: 'Produto de teste', titulo: 'Produto de teste', urlFoto: 'http://teste.com.br/foto.png' },
+
     ],
   })
   itens_id: CreateItemPedidoDto[];

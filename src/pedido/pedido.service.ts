@@ -4,7 +4,6 @@ import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { CrmService } from 'src/crm.service';
 import { PrismaService } from 'src/config/prisma.client';
 import { Pedido } from '@prisma/client';
-import { CreateItemPedidoDto } from './dto/create-itemPedido.dto';
 
 @Injectable()
 export class PedidoService {
@@ -35,34 +34,14 @@ export class PedidoService {
         pedidoitem: {
           create: itens_id.map((item) => ({
             cardapioId: item.id,
-            quantidade: item.qtd,
-            valor_unitario: item.valor_unitario,
+            quantidade: item.quantidade,
+            valor_unitario: item.preco,
           })),
         },
       },
       include: {
         pedidoitem: true,
       },
-    });
-  }
-
-  async findAll(): Promise<Pedido[]> {
-    return await this.prisma.pedido.findMany({});
-  }
-
-  async findOne(id: number): Promise<Pedido> {
-    await this.crm.findPedidoById(Number(id));
-
-    return await this.prisma.pedido.findUnique({
-      where: { id: Number(id) },
-    });
-  }
-
-  async remove(id: number): Promise<Pedido> {
-    await this.crm.findPedidoById(Number(id));
-
-    return await this.prisma.pedido.delete({
-      where: { id: Number(id) },
     });
   }
 
@@ -81,6 +60,31 @@ export class PedidoService {
       include: {
         user: true,
       },
+    });
+  }
+
+  async findAll(): Promise<Pedido[]> {
+    return await this.prisma.pedido.findMany({
+      include: {
+        pedidoitem: true,
+        user: true,
+      },
+    });
+  }
+
+  async findOne(id: number): Promise<Pedido> {
+    await this.crm.findPedidoById(Number(id));
+
+    return await this.prisma.pedido.findUnique({
+      where: { id: Number(id) },
+    });
+  }
+
+  async remove(id: number): Promise<Pedido> {
+    await this.crm.findPedidoById(Number(id));
+
+    return await this.prisma.pedido.delete({
+      where: { id: Number(id) },
     });
   }
 }
