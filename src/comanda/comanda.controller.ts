@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ComandaService } from './comanda.service';
 import { CreateComandaDto } from './dto/create-comanda.dto';
 import { UpdateComandaDto } from './dto/update-comanda.dto';
@@ -18,8 +26,8 @@ export class ComandaController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.comandaService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.comandaService.findOne(id);
   }
 
   @Patch(':id')

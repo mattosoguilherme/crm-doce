@@ -47,12 +47,23 @@ export class ComandaService {
     return createdComandas;
   }
 
-  findAll() {
-    return `This action returns all comanda`;
+  async findAll() {
+    return await this.prisma.comanda.findMany({
+      include: {
+        Pedidos: true,
+        user: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comanda`;
+  async findOne(id: number) {
+    return await this.prisma.comanda.findUnique({
+      where: { id: id },
+      include: {
+        Pedidos: true,
+        user: true,
+      },
+    });
   }
 
   update(id: number, updateComandaDto: UpdateComandaDto) {
