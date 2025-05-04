@@ -22,12 +22,14 @@ export class ComandaService {
 
     for (const user of users) {
       let total = 0;
-      const comanda = pedidos.filter((p) => p.userId === user.id);
+      const comanda = pedidos.filter(
+        (p) => p.userId === user.id && p.status === 'PENDENTE',
+      );
       for (const c of comanda) {
         total += c.total;
       }
 
-     const createComanda = await this.prisma.comanda.create({
+      const createComanda = await this.prisma.comanda.create({
         data: {
           nome_cliente: user.nome,
           total: total,
@@ -39,7 +41,7 @@ export class ComandaService {
         },
       });
 
-      createdComandas.push(createComanda)
+      createdComandas.push(createComanda);
     }
 
     return createdComandas;
