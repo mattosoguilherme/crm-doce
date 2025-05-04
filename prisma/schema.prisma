@@ -44,14 +44,17 @@ model Pedido {
 }
 
 model Comanda {
-  id            Int      @id @default(autoincrement())
-  userId        String
-  status        Boolean
-  saldo_devedor Float
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  user          User     @relation(fields: [userId], references: [id])
-  Pedidos       Pedido[]
+  id             Int      @id @default(autoincrement())
+  userId         String
+  nome_cliente   String
+  status         String   @default("PENDENTE")
+  saldo_pendente Float
+  saldo_quitado  Float
+  total          Float
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id])
+  Pedidos        Pedido[]
 
   @@index([userId], map: "comanda_userId_fkey")
   @@map("comanda")
