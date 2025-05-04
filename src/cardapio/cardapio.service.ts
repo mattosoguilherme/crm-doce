@@ -13,14 +13,17 @@ export class CardapioService {
   ) {}
 
   async create(createCardapioDto: CreateCardapioDto): Promise<Cardapio> {
+    
     return await this.prisma.cardapio.create({
       data: {
         descricao: createCardapioDto.descricao,
         preco: createCardapioDto.preco,
         titulo: this.crmService.titleize(createCardapioDto.titulo),
         urlFoto: createCardapioDto.urlFoto,
-      
-
+        cpu: createCardapioDto.cpu,
+        cpl: createCardapioDto.cpl,
+        lucro: createCardapioDto.lucro,
+        quantidade_lote: createCardapioDto.quantidade_lote,
       },
     });
   }
@@ -35,7 +38,7 @@ export class CardapioService {
 
   async update(id: number, updateCardapioDto: UpdateCardapioDto) {
     return await this.prisma.cardapio.update({
-      where: { id: Number(id)},
+      where: { id: Number(id) },
       data: {
         descricao: updateCardapioDto.descricao,
         preco: updateCardapioDto.preco,
@@ -49,6 +52,4 @@ export class CardapioService {
   async remove(id: number): Promise<Cardapio> {
     return await this.prisma.cardapio.delete({ where: { id: Number(id) } });
   }
-
-  
 }

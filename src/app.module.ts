@@ -3,12 +3,20 @@ import { UserModule } from './user/user.module';
 import { PedidoModule } from './pedido/pedido.module';
 import { EstoqueModule } from './estoque/estoque.module';
 import { CardapioModule } from './cardapio/cardapio.module';
-import { SpreadsheetService } from './spreadsheet/spreadsheet.service';
-import { SpreadsheetController } from './spreadsheet/spreadsheet.controller';
+import { SpreadsheetModule } from './spreadsheet/spreadsheet.module';
+import { ComandaModule } from './comanda/comanda.module';
+
 
 @Module({
-  imports: [UserModule, PedidoModule, EstoqueModule, CardapioModule],
-  controllers: [SpreadsheetController],
-  providers: [SpreadsheetService],
+  imports: [
+    UserModule,
+    PedidoModule,
+    EstoqueModule,
+    CardapioModule,
+    SpreadsheetModule,
+    ComandaModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

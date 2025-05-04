@@ -4,6 +4,7 @@ import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { CrmService } from 'src/crm.service';
 import { PrismaService } from 'src/config/prisma.client';
 import { Pedido } from '@prisma/client';
+import { log } from 'console';
 
 @Injectable()
 export class PedidoService {
@@ -18,10 +19,12 @@ export class PedidoService {
     status,
     metodo_pagamento,
     total,
+    data,
   }: CreatePedidoDto): Promise<Pedido> {
     await this.crm.findUserById(user_id);
 
     for (const item of itens_id) {
+      
       await this.crm.findItemById(item.id);
     }
 
@@ -38,6 +41,7 @@ export class PedidoService {
             valor_unitario: item.preco,
           })),
         },
+        createdAt: this.crm.convertDate(data),
       },
       include: {
         pedidoitem: true,

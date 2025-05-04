@@ -9,14 +9,20 @@ export class CrmService {
   constructor(private prisma: PrismaService) {}
 
   titleize(text: string) {
-    var words = text.toLowerCase().split(' ');
-
-    for (var i = 0; i < words.length; i++) {
-      var w: string = words[i];
-      words[i] = w[0].toUpperCase() + w.slice(1);
+    const words = text.toLowerCase().split(' ');
+  
+    for (let i = 0; i < words.length; i++) {
+      const w = words[i];
+      words[i] = w.charAt(0).toUpperCase() + w.slice(1);
     }
-    const n: string = words.join();
-    return n.replace(/,/g, ' ');
+  
+    return words.join(' ');
+  }
+  
+
+  convertDate(data: string): Date {
+    const [dia, mes, ano] = data.split('/');
+    return new Date(Number(ano), Number(mes), Number(dia));
   }
 
   // USER
@@ -25,7 +31,7 @@ export class CrmService {
       where: { matricula: matricula },
     });
     if (user) {
-      throw new ConflictException(matricula, 'Matricula já cadastrada');
+      throw new ConflictException(user, 'Matricula já cadastrada');
     }
   }
   async emailValid(email: string) {
@@ -138,7 +144,7 @@ export class CrmService {
 
   async findItemById(id: number) {
     const item = await this.prisma.cardapio.findUnique({
-      where: { id: Number(id) },
+      where: { id: id },
     });
 
     if (!item) {

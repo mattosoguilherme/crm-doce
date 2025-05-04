@@ -33,4 +33,9 @@ export class CreatePedidoDto {
   @IsNotEmpty({ message: 'O campo total não pode ser vazio' })
   @ApiProperty({ default: 100.1 })
   total: number;
+
+  @IsString( { message: 'O campo data deve ser um texto' })
+  @IsNotEmpty({ message: 'O campo data não pode ser vazio' })
+  @ApiProperty({ default: "11/04/2025" })
+  data: string
 }

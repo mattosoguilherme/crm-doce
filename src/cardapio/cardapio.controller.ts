@@ -1,15 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CardapioService } from './cardapio.service';
 import { CreateCardapioDto } from './dto/create-cardapio.dto';
 import { UpdateCardapioDto } from './dto/update-cardapio.dto';
+import { CreateMCardapio } from './dto/createM-cardapio.dto';
 
 @Controller('cardapio')
 export class CardapioController {
   constructor(private readonly cardapioService: CardapioService) {}
 
   @Post()
-  create(@Body() createCardapioDto: CreateCardapioDto) {
-    return this.cardapioService.create(createCardapioDto);
+  async create(@Body() createCardapioDto: CreateMCardapio[]) {
+    const cardapio = [];
+    //  return await Promise.all( createCardapioDto.map( item =>  this.cardapioService.create(item)) )
+    for (const item of createCardapioDto) {
+      const createdItem = await this.cardapioService.create(item);
+
+      cardapio.push(createdItem);
+    }
+
+    return cardapio;
   }
 
   @Get()
@@ -23,7 +40,10 @@ export class CardapioController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateCardapioDto: UpdateCardapioDto) {
+  update(
+    @Param('id') id: number,
+    @Body() updateCardapioDto: UpdateCardapioDto,
+  ) {
     return this.cardapioService.update(id, updateCardapioDto);
   }
 

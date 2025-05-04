@@ -8,15 +8,19 @@ datasource db {
 }
 
 model Cardapio {
-  id         Int          @id @default(autoincrement())
-  urlFoto    String
-  titulo     String
-  descricao  String
-  preco      Float
-  active     Boolean?     @default(false)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  pedidoitem pedidoitem[]
+  id              Int          @id @default(autoincrement())
+  urlFoto         String
+  titulo          String
+  descricao       String
+  preco           Float
+  cpu             Float
+  lucro           Float
+  quantidade_lote Int
+  cpl             Float
+  active          Boolean?     @default(false)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  pedidoitem      pedidoitem[]
 
   @@map("cardapio")
 }
@@ -69,21 +73,22 @@ model pedidoitem {
 }
 
 model User {
-  id           String     @id @default(cuid())
-  email        String     @unique
+  id           String      @id @default(cuid())
+  email        String      @unique
   password     String
   nome         String?
-  contato      String     @unique
+  contato      String      @unique
   produto      String
   unidade      String
-  matricula    String?    @unique
+  matricula    String?     @unique
   aniversario  DateTime
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
   MessageLog   MessageLog? @relation(fields: [messageLogId], references: [id])
   Comanda      Comanda[]
   Pedidos      Pedido[]
-  messageLogId Int?        @unique  
+  messageLogId Int?        @unique
+
   @@map("user")
 }
 

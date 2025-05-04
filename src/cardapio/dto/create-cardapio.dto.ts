@@ -22,4 +22,26 @@ export class CreateCardapioDto {
   @IsNotEmpty()
   @ApiProperty( {default:12.00})
   preco: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty( {default:12.00})
+  cpu: number;
+
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty( {default:12.00})
+  cpl: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty( {default:12.00})
+  lucro: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty( {default:12.00})
+  quantidade_lote: number;
+
 }
