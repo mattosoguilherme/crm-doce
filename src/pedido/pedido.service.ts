@@ -24,7 +24,6 @@ export class PedidoService {
     await this.crm.findUserById(user_id);
 
     for (const item of itens_id) {
-      
       await this.crm.findItemById(item.id);
     }
 
@@ -51,17 +50,33 @@ export class PedidoService {
 
   async update(
     id: number,
-    { itens_id, status, user_id }: UpdatePedidoDto,
+    { itens_id, status, user_id, metodo_pagamento, total }: UpdatePedidoDto,
   ): Promise<Pedido> {
     await this.crm.findUserById(user_id);
+    await this.crm.findPedidoById(id);
+
+    for (const item of itens_id) {
+      await this.crm.findItemById(item.id);
+    }
 
     return await this.prisma.pedido.update({
       where: { id: Number(id) },
       data: {
         status: status,
         userId: user_id,
+        metodo_pagamento: metodo_pagamento,
+        total: total,
+        pedidoitem: {
+          deleteMany: {},
+          create: itens_id.map((item) => ({
+            cardapioId: item.id,
+            quantidade: item.quantidade,
+            valor_unitario: item.preco,
+          })),
+        },
       },
       include: {
+        pedidoitem: true,
         user: true,
       },
     });
@@ -90,5 +105,9 @@ export class PedidoService {
     return await this.prisma.pedido.delete({
       where: { id: Number(id) },
     });
+  }
+
+  async removeAll() {
+    return await this.prisma.pedido.deleteMany();
   }
 }

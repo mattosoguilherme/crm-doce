@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateComandaDto } from './dto/create-comanda.dto';
 import { UpdateComandaDto } from './dto/update-comanda.dto';
 import { PrismaService } from 'src/config/prisma.client';
 import { CrmService } from 'src/crm.service';
 import { UserService } from 'src/user/user.service';
 import { PedidoService } from 'src/pedido/pedido.service';
+import { Comanda } from '@prisma/client';
 
 @Injectable()
 export class ComandaService {
@@ -15,7 +15,7 @@ export class ComandaService {
     private pedidoService: PedidoService,
   ) {}
 
-  async create(createComandaDto: CreateComandaDto) {
+  async create() {
     const users = await this.userService.findAll();
     const pedidos = await this.pedidoService.findAll();
     const createdComandas = [];
@@ -36,6 +36,7 @@ export class ComandaService {
           saldo_quitado: 0,
           saldo_pendente: 0,
           status: 'PENDENTE',
+          vendedor: "",
           Pedidos: { connect: comanda.map((c) => ({ id: c.id })) },
           user: { connect: { id: user.id } },
         },
@@ -50,24 +51,84 @@ export class ComandaService {
   async findAll() {
     return await this.prisma.comanda.findMany({
       include: {
-        Pedidos: true,
+        Pedidos: {
+          include: {
+            pedidoitem: {
+              include: {
+                cardapio: true,
+              },
+            },
+          },
+        },
         user: true,
       },
     });
   }
 
   async findOne(id: number) {
-    return await this.prisma.comanda.findUnique({
-      where: { id: id },
-      include: {
-        Pedidos: true,
-        user: true,
-      },
-    });
+    return await this.crm.findComandaById(id);
   }
 
-  update(id: number, updateComandaDto: UpdateComandaDto) {
-    return `This action updates a #${id} comanda`;
+  async update(
+    id: number,
+    updateComandaDto: UpdateComandaDto,
+  ): Promise<Comanda> {
+    const comandaAtual = await this.crm.findComandaById(id);
+
+    let novoTotal = comandaAtual.total;
+
+    // Remoção de pedidos
+    if (updateComandaDto.pedidoIdRemoved) {
+      for (const pedidoId of updateComandaDto.pedidoIdRemoved) {
+        const pedidoAtual = await this.crm.findPedidoById(pedidoId);
+
+        novoTotal -= pedidoAtual.total;
+
+        await this.prisma.comanda.update({
+          where: { id: Number(id) },
+          data: {
+            Pedidos: {
+              disconnect: { id: Number(pedidoId) },
+            },
+          },
+        });
+
+        await this.pedidoService.remove(pedidoId);
+      }
+    }
+
+    // Edição de pedidos
+    if (updateComandaDto.pedidoEdit) {
+      for (const pedido of updateComandaDto.pedidoEdit) {
+        const pedidoOriginal = await this.crm.findPedidoById(pedido.id_pedido);
+        novoTotal -= pedidoOriginal.total;
+
+        await this.pedidoService.update(pedido.id_pedido, pedido);
+
+        novoTotal += pedido.total;
+      }
+    }
+
+    // Monta o objeto de atualização final
+    const dataToUpdate: any = {
+      total: novoTotal,
+    };
+
+    if (updateComandaDto.status !== undefined)
+      dataToUpdate.status = updateComandaDto.status;
+    if (updateComandaDto.saldo_pendente !== undefined)
+      dataToUpdate.saldo_pendente = updateComandaDto.saldo_pendente;
+    if (updateComandaDto.saldo_quitado !== undefined)
+      dataToUpdate.saldo_quitado = updateComandaDto.saldo_quitado;
+    if (updateComandaDto.total !== undefined)
+      dataToUpdate.total = updateComandaDto.total; // cuidado com sobrescrever o `novoTotal`
+
+    const comandaUpdated = await this.prisma.comanda.update({
+      where: { id: Number(id) },
+      data: dataToUpdate,
+    });
+
+    return comandaUpdated;
   }
 
   remove(id: number) {

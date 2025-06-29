@@ -29,4 +29,6 @@ export class ClienteComandaDto {
     },
   ];
   total_comanda: number;
+  celula?: string;
+  operacao?: string;
 }

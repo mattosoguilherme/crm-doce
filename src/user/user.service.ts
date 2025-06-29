@@ -35,8 +35,6 @@ export class UserService {
 
     delete createUserDto.confirmPassword;
 
-    console.log(createUserDto)
-
     return await this.prisma.user.create({
       data: {
         contato: contato,
@@ -47,17 +45,28 @@ export class UserService {
         produto: createUserDto.produto,
         unidade: createUserDto.unidade,
         password: createUserDto.password,
+        celula: createUserDto.celula,
+        operacao: createUserDto.operacao,
       },
     });
   }
 
   async findAll() {
-    return await this.prisma.user.findMany();
+    return await this.prisma.user.findMany({
+      include: {
+        Pedidos: true,
+        Comanda: true,
+      },
+    });
   }
   async findOne(id: string): Promise<User> {
     await this.crm.findUserById(id);
     return await this.prisma.user.findUnique({
       where: { id },
+      include: {
+        Pedidos: true,
+        Comanda: true,
+      },
     });
   }
 

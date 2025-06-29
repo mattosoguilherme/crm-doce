@@ -72,4 +72,18 @@ export class CreateUserDto {
     default: '123456',
   })
   confirmPassword: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    default: 'CAE PREMIUM',
+  })
+  celula: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    default: 'Alelo',
+  })
+  operacao: string;
 }

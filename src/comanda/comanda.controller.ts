@@ -8,7 +8,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ComandaService } from './comanda.service';
-import { CreateComandaDto } from './dto/create-comanda.dto';
 import { UpdateComandaDto } from './dto/update-comanda.dto';
 
 @Controller('comanda')
@@ -16,8 +15,8 @@ export class ComandaController {
   constructor(private readonly comandaService: ComandaService) {}
 
   @Post()
-  create(@Body() createComandaDto: CreateComandaDto) {
-    return this.comandaService.create(createComandaDto);
+  create() {
+    return this.comandaService.create();
   }
 
   @Get()
@@ -31,8 +30,8 @@ export class ComandaController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateComandaDto: UpdateComandaDto) {
-    return this.comandaService.update(+id, updateComandaDto);
+  update(@Param('id') id: number, @Body() updateComandaDto: UpdateComandaDto) {
+    return this.comandaService.update(id, updateComandaDto);
   }
 
   @Delete(':id')

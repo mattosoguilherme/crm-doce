@@ -1,31 +1,50 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from './config/prisma.client';
 import { User } from '@prisma/client';
 import { UpdateUserDto } from './user/dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { Role } from './utils/roles.enum';
 
 @Injectable()
 export class CrmService {
   constructor(private prisma: PrismaService) {}
 
+stringParaData(dataStr: string): Date {
+  const [dia, mes, ano] = dataStr.split('/').map(Number);
+  return new Date(ano, mes - 1, dia); // mês começa do zero (0 = janeiro)
+}
+
   titleize(text: string) {
     const words = text.toLowerCase().split(' ');
-  
+
     for (let i = 0; i < words.length; i++) {
       const w = words[i];
       words[i] = w.charAt(0).toUpperCase() + w.slice(1);
     }
-  
+
     return words.join(' ');
   }
-  
 
   convertDate(data: string): Date {
     const [dia, mes, ano] = data.split('/');
-    return new Date(Number(ano), Number(mes), Number(dia));
+    return new Date(Number(ano), Number(mes)-1, Number(dia));
   }
 
-  // USER
+  gerarEmail(nomeCompleto: string): string {
+  const nomes = nomeCompleto.trim().split(/\s+/);
+  const primeiroNome = nomes[0].toLowerCase();
+  const ultimoNome = nomes[nomes.length - 1].toLowerCase();
+
+  return `${primeiroNome}.${ultimoNome}@dtl.com`;
+}
+
+
+// USER
+
   async matriculaValid(matricula: string) {
     const user = await this.prisma.user.findUnique({
       where: { matricula: matricula },
@@ -54,10 +73,32 @@ export class CrmService {
   async findUserById(id: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { id: id },
+      include: {
+        Pedidos: true,
+        Comanda: true,
+        
+        
+        
+      },
     });
 
     if (!user) {
       throw new ConflictException('Id User não encontrado');
+    }
+
+    return user;
+  }
+  async findUserByEmail(email: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: { email: email },
+      include: {
+        Pedidos: true,
+        Comanda: true,
+      },
+    });
+
+    if (!user) {
+      throw new ConflictException('Email User não encontrado');
     }
 
     return user;
@@ -92,7 +133,10 @@ export class CrmService {
       unidade: userUpdate.unidade,
       matricula: userBefore.matricula,
       aniversario: userBefore.aniversario,
+      role: Role.USER,
       messageLogId: 0,
+      celula:userBefore.celula,
+      operacao:userBefore.operacao,
     };
 
     if (userUpdate.nome) {
@@ -169,4 +213,53 @@ export class CrmService {
 
     return pedido;
   }
+  async pedidoValid(id: number) {
+    const pedido = await this.prisma.pedido.findUnique({
+      where: { id: Number(id) },
+    });
+    if (!pedido) {
+      throw new NotFoundException(`ID ${id} não encontrado`);
+    }
+    return pedido;
+  }
+
+  // END PEDIDO
+
+  // COMANDA
+
+  async findComandaById(id: number) {
+    const c = await this.prisma.comanda.findUnique({
+      where: { id: Number(id) },
+      include: {
+        Pedidos: {
+          include: {
+            pedidoitem: {
+              include: {
+                cardapio: true,
+              },
+            },
+          },
+        },
+        user: true,
+      },
+    });
+
+    if (!c) {
+      throw new NotFoundException(' ID NÃO CADASTRADO');
+    }
+
+    return c;
+  }
+
+  async comdandaValid(id: number) {
+    const comanda = await this.prisma.comanda.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!comanda) {
+      throw new NotFoundException(`ID ${id} não encontrado`);
+    }
+  }
+
+  //END COMANDA
 }
