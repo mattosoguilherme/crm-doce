@@ -38,4 +38,9 @@ export class ComandaController {
   remove(@Param('id') id: string) {
     return this.comandaService.remove(+id);
   }
+
+  @Delete()
+  removeAll() {
+    return this.comandaService.removeAll();
+  }
 }

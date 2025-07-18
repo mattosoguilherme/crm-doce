@@ -16,4 +16,9 @@ export class WhatsappController {
     return await this.whatsappService.sendAllComandas();
   }
 
+  @Post('sendNotice')
+  async sendNotices(){
+    return await this.whatsappService.sendNoticeAll()
+  }
+
 }

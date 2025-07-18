@@ -3,10 +3,15 @@ import { SendMessage } from './dto/sendMessage';
 import axios from 'axios';
 import { ComandaService } from 'src/comanda/comanda.service';
 import { log } from 'console';
+import { PrismaService } from 'src/config/prisma.client';
+import { axiosConfig } from 'src/config/axios.client';
 
 @Injectable()
 export class WhatsappService {
-  constructor(private comandaService: ComandaService) {}
+  constructor(
+    private comandaService: ComandaService,
+    private prisma: PrismaService,
+  ) {}
 
   sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -49,8 +54,8 @@ export class WhatsappService {
       const msg = `
       🌟 Olá! Sou a Maju, assistente da loja. 😊  
     
-      👤 *${comanda.user.nome}*, \n espero que esteja bem!  
-      Me perdoe pelo horário, mas estou passando para lembrar sobre o pagamento da sua *COMANDA DE MAIO*.  
+      👤 *${comanda.user.nome.trim()}*, \n espero que esteja bem!  
+      Me perdoe pelo horário, mas estou passando para lembrar sobre o pagamento da sua *COMANDA DE JUNHO*.  
 
       📲 *Fique por dentro das novidades e promoções!*  
       👉 Siga a gente no Instagram: [@docinhostialulu_](https://www.instagram.com/docinhostialulu_?igsh=MW1tNDNjODdqeXp3Mg==) 🍭✨  
@@ -87,6 +92,56 @@ export class WhatsappService {
             'Content-Type': 'application/json',
           },
         })
+        .then(async (response) => {
+          log('Mensagem enviada com sucesso:', response.data);
+
+          await this.prisma.messageLog.create({
+            data: {
+              message: true,
+              User: { connect: { id: comanda.user.id } },
+            },
+          });
+        })
+        .catch((error) => {
+          log(
+            'Erro ao enviar mensagem:',
+            error.response?.data || error.message,
+          );
+        });
+
+      await this.sleep(60000); // 1 minuto de espera entre os envios
+    }
+  }
+
+  async sendNoticeAll() {
+    const users = await this.prisma.user.findMany();
+
+    for (const user of users) {
+      const msg = `Oiê! Sou a Maju, sua assistente virtual mais açucarada💜
+
+🚨 NOVIDADE DOCE CHEGANDO! 🍬🍓
+
+Agora você pode ver sua comanda *online* direto no nosso site! 😍  
+👉 Acesse: https://docetialulu.vercel.app/  
+Seu login: *${user.email}*  
+Senha padrão: *mudar123*
+
+Em breve também vai dar pra fazer pedidos por lá 🛍️… mas segura a ansiedade que a atualização tá chegando! 😉
+
+Qualquer dúvida, chama a gente! 💬`;
+
+      const objSend: SendMessage = {
+        telefone: user.contato,
+        msg: msg,
+        id_comanda: 1,
+      };
+
+      await axios
+        .post('http://localhost:3004/sendToOne', objSend, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
         .then((response) => {
           log('Mensagem enviada com sucesso:', response.data);
         })
@@ -97,7 +152,7 @@ export class WhatsappService {
           );
         });
 
-      await this.sleep(60000); // 1 minuto de espera entre os envios
+      await this.sleep(60000);
     }
   }
 }

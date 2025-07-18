@@ -36,7 +36,7 @@ export class ComandaService {
           saldo_quitado: 0,
           saldo_pendente: 0,
           status: 'PENDENTE',
-          vendedor: "",
+          vendedor: '',
           Pedidos: { connect: comanda.map((c) => ({ id: c.id })) },
           user: { connect: { id: user.id } },
         },
@@ -133,5 +133,17 @@ export class ComandaService {
 
   remove(id: number) {
     return `This action removes a #${id} comanda`;
+  }
+
+  async removeAll() {
+    try {
+      const pedidoItemN = (await this.prisma.pedidoitem.deleteMany()).count;
+      const pedidoN = (await this.prisma.pedido.deleteMany()).count;
+      const comandaN = (await this.prisma.comanda.deleteMany()).count;
+
+      return `${comandaN} comandas excluidas. \n ${pedidoN} pedidos excluidos. \n ${pedidoItemN} items excluidos. `;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
