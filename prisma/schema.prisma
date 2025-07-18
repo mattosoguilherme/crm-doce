@@ -105,7 +105,7 @@ model MessageLog {
   id        Int      @id @default(autoincrement())
   message   Boolean
   User      User?    @relation()
-  userId    String?  @unique
+  userId    String?  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
