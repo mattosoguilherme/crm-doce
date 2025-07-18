@@ -36,7 +36,7 @@ export class ComandaService {
           saldo_quitado: 0,
           saldo_pendente: 0,
           status: 'PENDENTE',
-          vendedor: '',
+          vendedor: comanda[0].vendedor,
           Pedidos: { connect: comanda.map((c) => ({ id: c.id })) },
           user: { connect: { id: user.id } },
         },
