@@ -117,14 +117,14 @@ export class WhatsappService {
     const users = await this.prisma.user.findMany();
 
     for (const user of users) {
-      const msg = `Oiê! Sou a Maju, sua assistente virtual mais açucarada💜
+      const msg = `Oiê! Sou a Maju, sua assistente virtual mais açucarada💜\n\nPedimos desculpas pelo horário!\n
 
-🚨 NOVIDADE DOCE CHEGANDO! 🍬🍓
+🚨  COMANDA DE JUlHO ATUALIZADA NA PALMA DA SUA MÃO! 
 
-Agora você pode ver sua comanda *online* direto no nosso site! 😍  
+Acompanhe sua comanda *online* direto no nosso site! 😍  
 👉 Acesse: https://docetialulu.vercel.app/  
 Seu login: *${user.email}*  
-Senha padrão: *mudar123*
+Senha padrão: *padrão@2025*
 
 Em breve também vai dar pra fazer pedidos por lá 🛍️… mas segura a ansiedade que a atualização tá chegando! 😉
 
@@ -152,7 +152,7 @@ Qualquer dúvida, chama a gente! 💬`;
           );
         });
 
-      await this.sleep(60000);
+      await this.sleep(30000);
     }
   }
 }

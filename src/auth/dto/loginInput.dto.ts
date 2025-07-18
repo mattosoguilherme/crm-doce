@@ -11,6 +11,6 @@ export class LoginInputDto {
   @IsNotEmpty()
   @ApiProperty()
   @IsString()
-  @Length(4,10)
+  @Length(4,12)
   senha: string;
 }
