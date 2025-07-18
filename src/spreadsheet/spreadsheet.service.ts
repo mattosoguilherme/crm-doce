@@ -49,7 +49,7 @@ export class SpreadsheetService {
             await this.userServie.create({
               email,
               password: 'padrão@2025',
-              confirmPassword: 'padrão',
+              confirmPassword: 'padrão@2025',
               nome: cliente.nome,
               contato: cliente.telefone,
               produto: cliente.vendedor === 'GUILHERME' ? 'ALELO' : 'EPD',
@@ -84,6 +84,7 @@ export class SpreadsheetService {
           metodo_pagamento: 'PIX',
           total: item.total,
           data: item.data,
+          vendedor:cliente.vendedor,
           itens_id: [
             {
               id: i.id,

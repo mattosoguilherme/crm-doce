@@ -20,6 +20,7 @@ export class PedidoService {
     metodo_pagamento,
     total,
     data,
+    vendedor
   }: CreatePedidoDto): Promise<Pedido> {
     await this.crm.findUserById(user_id);
 
@@ -33,6 +34,7 @@ export class PedidoService {
         status: status,
         metodo_pagamento: metodo_pagamento,
         total: total,
+        vendedor:vendedor,
         pedidoitem: {
           create: itens_id.map((item) => ({
             cardapioId: item.id,

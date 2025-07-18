@@ -12,9 +12,24 @@ export class CreatePedidoDto {
   @IsNotEmpty({ message: 'O campo items_id não pode ser vazio' })
   @ApiProperty({
     default: [
-      { id: 1, quantidade: 2, preco: 12.0, active: true, descricao: 'Produto de teste', titulo: 'Produto de teste', urlFoto: 'http://teste.com.br/foto.png' },
-      { id: 2, quantidade: 1, preco: 15.0, active: true, descricao: 'Produto de teste', titulo: 'Produto de teste', urlFoto: 'http://teste.com.br/foto.png' },
-
+      {
+        id: 1,
+        quantidade: 2,
+        preco: 12.0,
+        active: true,
+        descricao: 'Produto de teste',
+        titulo: 'Produto de teste',
+        urlFoto: 'http://teste.com.br/foto.png',
+      },
+      {
+        id: 2,
+        quantidade: 1,
+        preco: 15.0,
+        active: true,
+        descricao: 'Produto de teste',
+        titulo: 'Produto de teste',
+        urlFoto: 'http://teste.com.br/foto.png',
+      },
     ],
   })
   itens_id: CreateItemPedidoDto[];
@@ -34,8 +49,13 @@ export class CreatePedidoDto {
   @ApiProperty({ default: 100.1 })
   total: number;
 
-  @IsString( { message: 'O campo data deve ser um texto' })
+  @IsString({ message: 'O campo data deve ser um texto' })
   @IsNotEmpty({ message: 'O campo data não pode ser vazio' })
-  @ApiProperty({ default: "11/04/2025" })
-  data: string
+  @ApiProperty({ default: '11/04/2025' })
+  data: string;
+
+  @IsString({ message: 'O campo vendedor deve ser uma string' })
+  @IsNotEmpty({ message: 'O campo vendedor não pode ser vazio' })
+  @ApiProperty({ default: 'vendedor' })
+  vendedor: string;
 }

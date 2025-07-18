@@ -41,13 +41,9 @@ export class UserController {
     return this.userService.delete(id);
   }
 
-  @Post('createTM')
-  createTM() {
-    return this.userService.createMany();
-  }
 
-  @Post('send')
-  send() {
-    return this.userService.SendComanda();
+  @Delete()
+  deleteMany() {
+    return this.userService.removeAll();
   }
 }
