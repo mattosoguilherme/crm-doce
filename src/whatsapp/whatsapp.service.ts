@@ -121,7 +121,7 @@ export class WhatsappService {
 
 🚨  COMANDA DE JUlHO ATUALIZADA NA PALMA DA SUA MÃO! 
 
-Agradecemos imensamente a compreensão, acesso ao site normalizado!\n 
+Agradecemos imensamente a compreensão, acesso ao site normalizado!\nSegue login com a *senha atualizada*:
 👉 Acesse: https://docetialulu.vercel.app/  
 Seu login: *${user.email}*  
 Senha padrão: *mudar@123*
