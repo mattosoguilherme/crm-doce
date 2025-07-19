@@ -48,8 +48,8 @@ export class SpreadsheetService {
         : (
             await this.userServie.create({
               email,
-              password: 'padrão@2025',
-              confirmPassword: 'padrão@2025',
+              password: 'mudar@123',
+              confirmPassword: 'mudar@123',
               nome: cliente.nome,
               contato: cliente.telefone,
               produto: cliente.vendedor === 'GUILHERME' ? 'ALELO' : 'EPD',
