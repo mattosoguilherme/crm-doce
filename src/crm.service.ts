@@ -13,10 +13,10 @@ import { Role } from './utils/roles.enum';
 export class CrmService {
   constructor(private prisma: PrismaService) {}
 
-stringParaData(dataStr: string): Date {
-  const [dia, mes, ano] = dataStr.split('/').map(Number);
-  return new Date(ano, mes - 1, dia); // mês começa do zero (0 = janeiro)
-}
+  stringParaData(dataStr: string): Date {
+    const [dia, mes, ano] = dataStr.split('/').map(Number);
+    return new Date(ano, mes - 1, dia); // mês começa do zero (0 = janeiro)
+  }
 
   titleize(text: string) {
     const words = text.toLowerCase().split(' ');
@@ -31,19 +31,18 @@ stringParaData(dataStr: string): Date {
 
   convertDate(data: string): Date {
     const [dia, mes, ano] = data.split('/');
-    return new Date(Number(ano), Number(mes)-1, Number(dia));
+    return new Date(Number(ano), Number(mes) - 1, Number(dia));
   }
 
   gerarEmail(nomeCompleto: string): string {
-  const nomes = nomeCompleto.trim().split(/\s+/);
-  const primeiroNome = nomes[0].toLowerCase();
-  const ultimoNome = nomes[nomes.length - 1].toLowerCase();
+    const nomes = nomeCompleto.trim().split(/\s+/);
+    const primeiroNome = nomes[0].toLowerCase();
+    const ultimoNome = nomes[nomes.length - 1].toLowerCase();
 
-  return `${primeiroNome}.${ultimoNome}@dtl.com`;
-}
+    return `${primeiroNome}.${ultimoNome}@dtl.com`;
+  }
 
-
-// USER
+  // USER
 
   async matriculaValid(matricula: string) {
     const user = await this.prisma.user.findUnique({
@@ -76,9 +75,6 @@ stringParaData(dataStr: string): Date {
       include: {
         Pedidos: true,
         Comanda: true,
-        
-        
-        
       },
     });
 
@@ -119,7 +115,10 @@ stringParaData(dataStr: string): Date {
       actualPassword,
     } = userUpdate;
 
-    const userBefore = await this.prisma.user.findUnique({ where: { id: id } });
+    const userBefore = await this.prisma.user.findUnique({
+      where: { id: id },
+      include: { Pedidos: true, Comanda: true, Vendedor: true },
+    });
 
     const userAfter = {
       id: userBefore.id,
@@ -135,9 +134,9 @@ stringParaData(dataStr: string): Date {
       aniversario: userBefore.aniversario,
       role: Role.USER,
       messageLogId: 0,
-      celula:userBefore.celula,
-      operacao:userBefore.operacao,
-      vendedorId: userBefore.vendedorId
+      celula: userBefore.celula,
+      operacao: userBefore.operacao,
+      vendedorId: userBefore.vendedorId,
     };
 
     if (userUpdate.nome) {
