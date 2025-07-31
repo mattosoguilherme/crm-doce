@@ -3,10 +3,6 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class SendMessage {
 
-  @IsNumber({},{ message: "O comanda_id deve ser um número" })
-  @ApiProperty({ description: "ID da comanda", default: 1})
-  @IsNotEmpty({ message: "O comanda_id não pode ser vazio" })
-  id_comanda: number;
 
   @IsString({ message: "O msg deve ser um texto" })
   @ApiProperty({ description: "mensagem com a comanada do cliente", default: "segue sua comanda. *mensagem teste*" })

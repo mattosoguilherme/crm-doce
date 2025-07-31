@@ -18,15 +18,14 @@ export class WhatsappService {
   }
 
   async sendOne(send: SendMessage) {
-    const { id_comanda, msg, telefone } = send;
+    const {  msg, telefone } = send;
 
     try {
       const response = await axios.post(
         'http://localhost:3004/sendToOne',
         {
           telefone: telefone,
-          msg: msg,
-          id_comanda: Number(id_comanda),
+          msg: msg
         },
         {
           headers: {
@@ -55,7 +54,7 @@ export class WhatsappService {
       🌟 Olá! Sou a Maju, assistente da loja. 😊  
     
       👤 *${comanda.user.nome.trim()}*, \n espero que esteja bem!  
-      Me perdoe pelo horário, mas estou passando para lembrar sobre o pagamento da sua *COMANDA DE JUNHO*.  
+      Me perdoe pelo horário, mas estou passando para lembrar sobre o pagamento da sua *COMANDA DE JULHO*.  
 
       📲 *Fique por dentro das novidades e promoções!*  
       👉 Siga a gente no Instagram: [@docinhostialulu_](https://www.instagram.com/docinhostialulu_?igsh=MW1tNDNjODdqeXp3Mg==) 🍭✨  
@@ -82,8 +81,8 @@ export class WhatsappService {
 
       const objSend: SendMessage = {
         telefone: comanda.user.contato,
-        msg: msg,
-        id_comanda: comanda.id,
+        msg: msg
+        
       };
 
       await axios
@@ -131,7 +130,7 @@ Qualquer problema ou dúvida, conte com a gente! 💬`;
       const objSend: SendMessage = {
         telefone: user.contato,
         msg: msg,
-        id_comanda: 1,
+       
       };
 
       await axios
