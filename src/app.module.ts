@@ -7,6 +7,7 @@ import { SpreadsheetModule } from './spreadsheet/spreadsheet.module';
 import { ComandaModule } from './comanda/comanda.module';
 import { WhatsappModule } from './whatsapp/whatsapp.module';
 import { AuthModule } from './auth/auth.module';
+import { VendedorModule } from './vendedor/vendedor.module';
 
 
 @Module({
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
     ComandaModule,
     WhatsappModule,
     AuthModule,
+    VendedorModule,
   ],
   controllers: [],
   providers: [],

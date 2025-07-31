@@ -137,6 +137,7 @@ stringParaData(dataStr: string): Date {
       messageLogId: 0,
       celula:userBefore.celula,
       operacao:userBefore.operacao,
+      vendedorId: userBefore.vendedorId
     };
 
     if (userUpdate.nome) {

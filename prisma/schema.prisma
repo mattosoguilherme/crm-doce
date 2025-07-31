@@ -95,17 +95,30 @@ model User {
   Comanda      Comanda[]
   Pedidos      Pedido[]
   messageLogId Int?        @unique
-  celula       String?     
-  operacao     String?     
+  celula       String?
+  operacao     String?
+  Vendedor     Vendedor?   @relation(fields: [vendedorId], references: [id])
+  vendedorId   Int?
 
   @@map("user")
+}
+
+model Vendedor {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  telefone  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User User[]
 }
 
 model MessageLog {
   id        Int      @id @default(autoincrement())
   message   Boolean
   User      User?    @relation()
-  userId    String?  
+  userId    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
