@@ -52,8 +52,8 @@ export class SpreadsheetService {
               confirmPassword: 'mudar@123',
               nome: cliente.nome,
               contato: cliente.telefone,
-              produto: cliente.vendedor === 'GUILHERME' ? 'ALELO' : 'EPD',
-              unidade: cliente.vendedor === 'GUILHERME' ? 'MOGI 1' : 'MOGI 2',
+              produto: cliente.operacao || 'NÃO INFORMADO',
+              unidade: cliente.vendedor === 'GUILHERME' ? 'MOGI II' : 'MOGI I',
               matricula: cliente.telefone,
               aniversario: '01/01/2025',
               celula: cliente.celula || 'NÃO INFORMADO',
@@ -80,11 +80,11 @@ export class SpreadsheetService {
 
         const createPedido: CreatePedidoDto = {
           user_id: userId,
-          status: 'PENDENTE',
+          status: cliente.status || 'PENDENTE',
           metodo_pagamento: 'PIX',
           total: item.total,
           data: item.data,
-          vendedor:cliente.vendedor,
+          vendedor: cliente.vendedor,
           itens_id: [
             {
               id: i.id,

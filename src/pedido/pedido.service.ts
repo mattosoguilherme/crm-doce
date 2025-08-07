@@ -20,7 +20,7 @@ export class PedidoService {
     metodo_pagamento,
     total,
     data,
-    vendedor
+    vendedor,
   }: CreatePedidoDto): Promise<Pedido> {
     await this.crm.findUserById(user_id);
 
@@ -28,13 +28,23 @@ export class PedidoService {
       await this.crm.findItemById(item.id);
     }
 
+    const vendedorId = await this.prisma.vendedor.findFirst({
+      where: { nome: vendedor },
+    });
+    log(vendedorId);
+
     return await this.prisma.pedido.create({
       data: {
-        userId: user_id,
         status: status,
         metodo_pagamento: metodo_pagamento,
         total: total,
-        vendedor:vendedor,
+        vendedor: vendedor,
+        Vendedor: {
+          connect: { id: vendedorId.id },
+        },
+        user: {
+          connect: { id: user_id },
+        },
         pedidoitem: {
           create: itens_id.map((item) => ({
             cardapioId: item.id,

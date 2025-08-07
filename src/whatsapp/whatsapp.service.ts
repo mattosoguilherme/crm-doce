@@ -51,16 +51,12 @@ export class WhatsappService {
 
     for (const comanda of comandas) {
       const msg = `
-      🌟 Olá! Sou a Maju, assistente da loja. 😊  
-    
-      👤 *${comanda.user.nome.trim()}*, \n espero que esteja bem!  
-      Me perdoe pelo horário, mas estou passando para lembrar sobre o pagamento da sua *COMANDA DE JULHO*.  
+      🌟 Oii, Maju aqui de novo, sua assistente mais açucarada. 😊
 
-      📲 *Fique por dentro das novidades e promoções!*  
-      👉 Siga a gente no Instagram: [@docinhostialulu_](https://www.instagram.com/docinhostialulu_?igsh=MW1tNDNjODdqeXp3Mg==) 🍭✨  
-      👉 Entre no nosso grupo do WhatsApp e receba ofertas exclusivas: [Clique aqui](https://chat.whatsapp.com/BvgnLYXjYaR8ek68dMeGvK) 💬🎁  
-    
-      📋 *COMANDA DE PEDIDO* 📋  
+      👤 *${comanda.user.nome.trim()}*, \n espero que esteja bem!
+      Me perdoe pelo horário, mas o(a) ${comanda.vendedor} pediu para lembrar sobre o pagamento da sua *COMANDA DE JULHO*.
+
+      📋 *COMANDA DE PEDIDO* 📋
     
       📦 *Pedidos:*  
       ${comanda.Pedidos.map(
@@ -71,12 +67,12 @@ export class WhatsappService {
       💰 *Total: R$ ${comanda.total}*  
     
       🔹 Para facilitar, você pode fazer o pagamento via *Pix*:  
-      💳 *Chave Pix (Nubank): 11999241855*  
-    
-      📩 Assim que realizar o pagamento ou se já realizou, por gentileza, envie o comprovante para confirmação.  
-    
-      Obrigado pela preferência! Qualquer dúvida, estou por aqui. 😊🍬  
-  
+      💳 *Chave Pix (Nubank): 11999241855*
+
+      📩 *Assim que realizar o pagamento ou se já realizou, por gentileza, envie o comprovante para confirmação.*
+
+      Obrigado pela preferência! Qualquer dúvida, estou por aqui. 😊🍬
+
     `;
 
       const objSend: SendMessage = {
@@ -94,12 +90,10 @@ export class WhatsappService {
         .then(async (response) => {
           log('Mensagem enviada com sucesso:', response.data);
 
-          await this.prisma.messageLog.create({
-            data: {
-              message: true,
-              User: { connect: { id: comanda.user.id } },
-            },
-          });
+         await this.prisma.comanda.update({
+           where: { id: comanda.id },
+           data: { status: 'ENVIADA', sended: true },
+         });
         })
         .catch((error) => {
           log(
@@ -110,6 +104,9 @@ export class WhatsappService {
 
       await this.sleep(60000); // 1 minuto de espera entre os envios
     }
+
+    console.log('Todas as mensagens foram enviadas com sucesso.');
+
   }
 
   async sendNoticeAll() {

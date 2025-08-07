@@ -5,6 +5,7 @@ import { CrmService } from 'src/crm.service';
 import { UserService } from 'src/user/user.service';
 import { PedidoService } from 'src/pedido/pedido.service';
 import { Comanda } from '@prisma/client';
+import { log } from 'console';
 
 @Injectable()
 export class ComandaService {
@@ -20,25 +21,43 @@ export class ComandaService {
     const pedidos = await this.pedidoService.findAll();
     const createdComandas = [];
 
+    console.log(users);
+    console.log(pedidos);
+
     for (const user of users) {
-      let total = 0;
-      const comanda = pedidos.filter(
+      // Filtra apenas os pedidos pendentes do usuário atual
+      const pedidosPendentes = pedidos.filter(
         (p) => p.userId === user.id && p.status === 'PENDENTE',
       );
-      for (const c of comanda) {
-        total += c.total;
+
+      if (pedidosPendentes.length === 0) {
+        continue;
       }
 
+      // Soma o total de todos os pedidos pendentes do usuário
+      const total = pedidosPendentes.reduce(
+        (acc, pedido) => acc + pedido.total,
+        0,
+      );
+
+      // Pega o vendedor do primeiro pedido pendente
+      const vendedor = pedidosPendentes[0].vendedor || 'VENDEDOR';
+
+      // Cria a comanda no banco
       const createComanda = await this.prisma.comanda.create({
         data: {
-          nome_cliente: user.nome,
-          total: total,
+          nome_cliente: user.nome ?? 'CLIENTE SEM NOME',
+          total,
           saldo_quitado: 0,
           saldo_pendente: 0,
           status: 'PENDENTE',
-          vendedor: comanda[0].vendedor,
-          Pedidos: { connect: comanda.map((c) => ({ id: c.id })) },
-          user: { connect: { id: user.id } },
+          vendedor,
+          Pedidos: {
+            connect: pedidosPendentes.map((pedido) => ({ id: pedido.id })),
+          },
+          user: {
+            connect: { id: user.id },
+          },
         },
       });
 

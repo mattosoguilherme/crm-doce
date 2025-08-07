@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_NUVEM")
+  url      = env("DATABASE_URL")
 }
 
 model Cardapio {
@@ -31,13 +31,15 @@ model Pedido {
   status           String
   metodo_pagamento String
   total            Float
-  vendedor         String       @default("VENDEDOR")
+  vendedor         String       
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
   comandaId        Int?
   Comanda          Comanda?     @relation(fields: [comandaId], references: [id])
   user             User         @relation(fields: [userId], references: [id])
   pedidoitem       pedidoitem[]
+  Vendedor         Vendedor     @relation(fields: [vendedorId], references: [id])
+  vendedorId       Int
 
   @@index([comandaId], map: "pedido_comandaId_fkey")
   @@index([userId], map: "pedido_userId_fkey")
@@ -97,21 +99,22 @@ model User {
   messageLogId Int?        @unique
   celula       String?
   operacao     String?
-  Vendedor     Vendedor?   @relation(fields: [vendedorId], references: [id])
-  vendedorId   Int?
 
   @@map("user")
 }
 
 model Vendedor {
-  id        Int      @id @default(autoincrement())
-  nome      String
-  email     String   @unique
-  telefone  String
+  id Int @id @default(autoincrement())
+
+  nome     String
+  email    String @unique
+  telefone String
+  password String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  User User[]
+  Pedido Pedido[]
 }
 
 model MessageLog {

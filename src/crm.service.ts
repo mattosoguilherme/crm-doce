@@ -117,7 +117,7 @@ export class CrmService {
 
     const userBefore = await this.prisma.user.findUnique({
       where: { id: id },
-      include: { Pedidos: true, Comanda: true, Vendedor: true },
+      include: { Pedidos: true, Comanda: true },
     });
 
     const userAfter = {
@@ -136,7 +136,7 @@ export class CrmService {
       messageLogId: 0,
       celula: userBefore.celula,
       operacao: userBefore.operacao,
-      vendedorId: userBefore.vendedorId,
+
     };
 
     if (userUpdate.nome) {
@@ -223,6 +223,10 @@ export class CrmService {
     return pedido;
   }
 
+  async findPedidoAll() {
+    return await this.prisma.pedido.findMany();
+  }
+
   // END PEDIDO
 
   // COMANDA
@@ -262,4 +266,44 @@ export class CrmService {
   }
 
   //END COMANDA
+  
+
+
+
+
+
+
+
+
+
+
+
+// VENDEDOR
+
+  async findVendedorById(id: number) {
+    const vendedor = await this.prisma.vendedor.findUnique({
+      where: { id: id },
+    });
+
+    if (!vendedor) {
+      throw new ConflictException('Id Vendedor não encontrado');
+    }
+
+    return vendedor;
+  }
+
+  async emailVendedorValid(email: string) {
+    const vendedor = await this.prisma.vendedor.findUnique({
+      where: { email: email },
+    });
+
+    if (!vendedor) {
+      throw new ConflictException('Email Vendedor não encontrado');
+    }
+
+    return vendedor;
+  }
+
+// END VENDEDOR
+
 }
