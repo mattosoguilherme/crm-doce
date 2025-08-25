@@ -110,14 +110,17 @@ export class WhatsappService {
   }
 
   async sendNoticeAll() {
-    const users = await this.prisma.user.findMany();
+    const users = await this.prisma.user.findMany({
+      include: {
+        Comanda: true
+      
+      },
+    });
 
     for (const user of users) {
-      const msg = `Oiê! Maju por aqui de novo rs, sua assistente virtual mais açucarada💜\n\nPedimos desculpas pelo horário!\n
-
-🚨  COMANDA DE JUlHO ATUALIZADA NA PALMA DA SUA MÃO! 
-
-Agradecemos imensamente a compreensão, acesso ao site normalizado!\nSegue login com a *senha atualizada*:
+      const msg = `Oiê! Maju por aqui de novo rs, sua assistente virtual mais açucarada💜\n\nPedimos desculpas pelo horário!\n 
+🚨 *${user.Comanda[0].vendedor}* me pediu para te mandar a, COMANDA DE AGOSTO ATUALIZADA!
+\nSegue login com a *senha atualizada*:\n
 👉 Acesse: https://docetialulu.vercel.app/  
 Seu login: *${user.email}*  
 Senha padrão: *mudar@123*
