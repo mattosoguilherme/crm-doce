@@ -43,4 +43,10 @@ export class ComandaController {
   removeAll() {
     return this.comandaService.removeAll();
   }
+
+
+  @Delete('status/:status')
+  removeAllByStatus(@Param('status') status: string) {
+    return this.comandaService.removeAllByStatus(status);
+  }
 }

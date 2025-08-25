@@ -16,35 +16,35 @@ export class ComandaService {
     private pedidoService: PedidoService,
   ) {}
 
-  async create() {
-    const users = await this.userService.findAll();
-    const pedidos = await this.pedidoService.findAll();
-    const createdComandas = [];
+async create() {
+  const users = await this.userService.findAll();
+  const pedidos = await this.pedidoService.findAll();
+  const createdOrUpdatedComandas = [];
 
-    console.log(users);
-    console.log(pedidos);
+  for (const user of users) {
+    // Filtra pedidos pendentes do usuário
+    const pedidosPendentes = pedidos.filter(
+      (p) => p.userId === user.id && p.status === 'PENDENTE',
+    );
 
-    for (const user of users) {
-      // Filtra apenas os pedidos pendentes do usuário atual
-      const pedidosPendentes = pedidos.filter(
-        (p) => p.userId === user.id && p.status === 'PENDENTE',
-      );
+    if (pedidosPendentes.length === 0) continue;
 
-      if (pedidosPendentes.length === 0) {
-        continue;
-      }
+    // Verifica se o usuário já tem uma comanda pendente
+    const comandaExistente = await this.prisma.comanda.findFirst({
+      where: {
+        userId: user.id,
+      },
+      include: {
+        Pedidos: true,
+      },
+    });
 
-      // Soma o total de todos os pedidos pendentes do usuário
-      const total = pedidosPendentes.reduce(
-        (acc, pedido) => acc + pedido.total,
-        0,
-      );
-
-      // Pega o vendedor do primeiro pedido pendente
+    if (!comandaExistente) {
+      // Se não existe, cria nova comanda
+      const total = pedidosPendentes.reduce((acc, pedido) => acc + pedido.total, 0);
       const vendedor = pedidosPendentes[0].vendedor || 'VENDEDOR';
 
-      // Cria a comanda no banco
-      const createComanda = await this.prisma.comanda.create({
+      const novaComanda = await this.prisma.comanda.create({
         data: {
           nome_cliente: user.nome ?? 'CLIENTE SEM NOME',
           total,
@@ -61,11 +61,36 @@ export class ComandaService {
         },
       });
 
-      createdComandas.push(createComanda);
-    }
+      createdOrUpdatedComandas.push(novaComanda);
+    } else {
+      // Se já existe, conecta os pedidos ainda não associados
+      const idsPedidosExistentes = comandaExistente.Pedidos.map((p) => p.id);
 
-    return createdComandas;
+      const novosPedidos = pedidosPendentes.filter(
+        (p) => !idsPedidosExistentes.includes(p.id)
+      );
+
+      if (novosPedidos.length === 0) continue;
+
+      // Atualiza a comanda conectando os novos pedidos
+      const totalAdicional = novosPedidos.reduce((acc, pedido) => acc + pedido.total, 0);
+      const comandaAtualizada = await this.prisma.comanda.update({
+        where: { id: comandaExistente.id },
+        data: {
+          total: { increment: totalAdicional },
+          Pedidos: {
+            connect: novosPedidos.map((pedido) => ({ id: pedido.id })),
+          },
+        },
+      });
+
+      createdOrUpdatedComandas.push(comandaAtualizada);
+    }
   }
+
+  return createdOrUpdatedComandas;
+}
+
 
   async findAll() {
     return await this.prisma.comanda.findMany({
@@ -161,6 +186,19 @@ export class ComandaService {
       const comandaN = (await this.prisma.comanda.deleteMany()).count;
 
       return `${comandaN} comandas excluidas. \n ${pedidoN} pedidos excluidos. \n ${pedidoItemN} items excluidos. `;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+   async removeAllByStatus(status: string) {
+    try {
+
+      const comandaN = (await this.prisma.comanda.deleteMany({
+        where: { status },
+      })).count;
+
+      return `${comandaN} comandas excluidas. `;
     } catch (e) {
       console.log(e);
     }
