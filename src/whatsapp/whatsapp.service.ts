@@ -5,12 +5,14 @@ import { ComandaService } from 'src/comanda/comanda.service';
 import { log } from 'console';
 import { PrismaService } from 'src/config/prisma.client';
 import { axiosConfig } from 'src/config/axios.client';
+import { CrmService } from 'src/crm.service';
 
 @Injectable()
 export class WhatsappService {
   constructor(
     private comandaService: ComandaService,
     private prisma: PrismaService,
+    private crmService: CrmService,
   ) {}
 
   sleep(ms: number): Promise<void> {
@@ -119,7 +121,7 @@ export class WhatsappService {
 
     for (const user of users) {
       const msg = `Oiê! Maju por aqui de novo rs, sua assistente virtual mais açucarada💜\n\nPedimos desculpas pelo horário!\n 
-🚨 *${user.Comanda[0].vendedor}* me pediu para te mandar a, COMANDA DE AGOSTO ATUALIZADA!
+🚨 *${this.crmService.titleize(user.Comanda[0].vendedor)}* me pediu para te mandar a COMANDA DE AGOSTO ATUALIZADA!
 \nSegue login com a *senha atualizada*:\n
 👉 Acesse: https://docetialulu.vercel.app/  
 Seu login: *${user.email}*  
